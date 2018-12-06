@@ -312,9 +312,7 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     pool1 = helper.poolingFactory(pool)
     pool2 = helper.poolingFactory(pool)
 
-    print("Empezo entrenamiento")
     model = fitModel(X_train, y_train, tamanioImagen, epocas, valorDropout, opt, act, conv1, conv2, pool1, pool2)
-    print("Termino el entrenamiento")
     prediccionEnTest = model.predict(X_test)
 
     #prediccionEnTrain = model.predict(X_train)

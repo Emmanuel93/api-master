@@ -14,25 +14,9 @@ class Solution(object):
       vars(self).update( dict )
 
     def calculate_fitness(self, fitness_function):
-		global op
-	    
-		print("PAAWWER", op)
-	    
-		op = True
-		
-		print("SUPERPAWER", op)
-
-		print("camina perro", fitness_function(self.value))
+		print("Empezo el entrnamiento")
 		self.fitness = fitness_function(self.value)
-		print("camina perro", self.fitness)
-		connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-		channel = connection.channel()
-		channel.queue_declare(queue='individuosEntrenados', durable=True)
-		entrenado = json.dumps({self.value, self.fitness}) # {"value": "0110001111110111101", "fitness": 0}
-
-		channel.basic_publish(exchange='',
-		                      routing_key='individuosEntrenados',
-		                      body=entrenado)
+		print("Finalizo el entrenamiento")
 
 def compete(a, b):
     """
@@ -50,19 +34,18 @@ def x(ch, method, properties, body):
 
 	cont = cont + 1	
 
-
 	f = lambda x: fitness(x)
 
-	ch.basic_ack(delivery_tag = method.delivery_tag)
+	individuo = json.loads( body, object_hook= Solution )
+	individuo.calculate_fitness(f)
+	connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+	channel = connection.channel()
+	channel.queue_declare(queue='individuosEntrenados', durable=True)
+	individuoEntrenado = json.dumps(individuo.__dict__)
 
-	if(cont ==2):
-		individuo2 = json.loads( body, object_hook= Solution )
-		individuo2.calculate_fitness(f)
-		compete(individuo1, individuo2)
-		cont = 0
-	else:
-		individuo1 = json.loads( body, object_hook= Solution )
-		individuo1.calculate_fitness(f)
+	channel.basic_publish(exchange='',
+	                      routing_key='individuosEntrenados',
+	                      body=individuoEntrenado)
 
 	print(" [x] Done")
 
@@ -212,6 +195,14 @@ def fitness(x):
 	    valorDropout = 0.5
 	elif valorDropout == 3:
 	    valorDropout = 0.6
+
+	nombreArchivo = "Agua_3121"
+	rutaArchivo = nombreArchivo+'.csv'
+	serie = helper.leerArchivo(rutaArchivo)
+
+	serie = helper.normalizarSerie(serie)
+
+	numeroPaso = 1
 
 	error, y_test, prediccionEnTest, model, y_test, prediccionEnTest = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
 

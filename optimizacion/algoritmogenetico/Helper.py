@@ -84,12 +84,12 @@ def running_median_insort(seq, window_size):
 	return result
 
 def MSE(originalList, forecastingList):
-    sum = 0
+    sumatoria = 0
     for index, elemet in enumerate(originalList):
         forecasting = forecastingList[index]
-        sum = sum + ((forecasting - elemet)**2)
+        sumatoria = sumatoria + ((forecasting - elemet)**2)
 
-    return sum / len(originalList)
+    return sumatoria[0] / len(originalList)
 
 def optimizerFactory(optimizer, learningRate):
 
