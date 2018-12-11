@@ -38,7 +38,9 @@ def x(ch, method, properties, body):
 
 	individuo = json.loads( body, object_hook= Solution )
 	individuo.calculate_fitness(f)
-	connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+
+	credentials = pika.PlainCredentials('server', 'emmanuel')
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials ))
 	channel = connection.channel()
 	channel.queue_declare(queue='individuosEntrenados', durable=True)
 	individuoEntrenado = json.dumps(individuo.__dict__)
@@ -116,7 +118,7 @@ def fitness(x):
 	# 0 no es valido
 	#training GradientDescentOptimizer, AdamOptimizer and RMSPropOptimizero
 	#maximo binario 11 = 3
-	#optimizer = 2 posiciones
+	#optimizer =   posiciones
 
 	optimizer = x[8:10]
 	optimizer = helper.binarioADecimal(optimizer)
@@ -240,7 +242,8 @@ if __name__ == '__main__':
 
 	print(nombreArchivo)
 
-	connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+	credentials = pika.PlainCredentials('server', 'emmanuel')
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials ))
 	channel = connection.channel()
 	channel.basic_qos(prefetch_count=2)
 	channel.basic_consume(x, queue='individuos', no_ack=False)

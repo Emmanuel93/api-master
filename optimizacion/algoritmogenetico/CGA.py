@@ -18,9 +18,8 @@ class Solution(object):
     """
     A solution for the given problem, it is composed of a binary value and its fitness value
     """
-    def __init__(self, value):
-        self.value = value
-        self.fitness = 0
+    def __init__(self, dict):
+        vars(self).update( dict )
 
     def calculate_fitness(self, fitness_function):
         self.fitness = fitness_function(self.value)
@@ -35,7 +34,12 @@ def generate_candidate(vector):
     for p in vector:
         value += "1" if random() < p else "0"
 
-    return Solution(value)
+    dictionario = {
+        "value" : value,
+        "fitness" : 0
+    }
+
+    return Solution(dictionario)
 
 
 def generate_vector(size):
@@ -75,7 +79,9 @@ def recieve_individuos(individuo):
 
     individuo = json.loads( individuo, object_hook= Solution )
 
-    print 'Recibiendo individuo' + individuo
+    print('Recibiendo individuo ',individuo)
+    print('individuo.value ',individuo.value)
+    print('Recibiendo individuo ',individuo.fitness)
 
     contadorIndivudosEntrenados = 1
 
@@ -84,9 +90,6 @@ def recieve_individuos(individuo):
         stop = False
     else:    
         IndividuosEntrenadoUno = individuo
-        stop = False
-
-    
 
 def run(generations, size, population_size, fitness_function):
     global stop
@@ -97,7 +100,6 @@ def run(generations, size, population_size, fitness_function):
     vector = generate_vector(size)
     # [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
     best = None
-    print("STOP" , stop)
 
     # I stop by the number of generations but you can define any stop param
     for i in xrange(generations):
@@ -137,8 +139,9 @@ def run(generations, size, population_size, fitness_function):
         # s2.calculate_fitness(fitness_function)
 
         # let them compete, so we can know who is the best of the pair
+        print "Inicia Competencia"
         winner, loser = compete(IndividuosEntrenadoUno, IndividuosEntrenadoDos)
-
+        print "Finaliza Competencia"
         if best:
             if winner.fitness > best.fitness:
                 best = winner
