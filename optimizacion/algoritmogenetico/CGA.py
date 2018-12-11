@@ -83,7 +83,7 @@ def recieve_individuos(individuo):
     print('individuo.value ',individuo.value)
     print('Recibiendo individuo ',individuo.fitness)
 
-    contadorIndivudosEntrenados = 1
+    contadorIndivudosEntrenados= contadorIndivudosEntrenados + 1
 
     if contadorIndivudosEntrenados == 2:
         IndividuosEntrenadoDos = individuo
@@ -148,11 +148,12 @@ def run(generations, size, population_size, fitness_function):
         else:
             best = winner
 
+        print "generation: %d best value: %s best fitness: %f" % (i + 1, best.value, float(best.fitness))
+
         # updates the probability vector based on the success of each bit
         update_vector(vector, winner.value, loser.value, population_size)
         
     ##return self.mejorModelo
-    #print "generation: %d best value: %s best fitness: %f" % (i + 1, best.value, float(best.fitness))
 def callback2(body):
     global stop
     print body
@@ -178,6 +179,7 @@ if __name__ == '__main__':
 
     IndividuosEntrenadoUno = None
     IndividuosEntrenadoDos = None
+    contadorIndivudosEntrenados = 0 
 
     stop = False
     vector = None

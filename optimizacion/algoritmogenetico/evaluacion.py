@@ -245,6 +245,6 @@ if __name__ == '__main__':
 	credentials = pika.PlainCredentials('server', 'emmanuel')
 	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials ))
 	channel = connection.channel()
-	channel.basic_qos(prefetch_count=2)
-	channel.basic_consume(x, queue='individuos', no_ack=False)
+	channel.basic_qos(prefetch_count=1)
+	channel.basic_consume(x, queue='individuos')
 	channel.start_consuming()
