@@ -85,9 +85,11 @@ def recieve_individuos(individuo):
 
     contadorIndivudosEntrenados= contadorIndivudosEntrenados + 1
 
+    print contadorIndivudosEntrenados
     if contadorIndivudosEntrenados == 2:
         IndividuosEntrenadoDos = individuo
         stop = False
+        contadorIndivudosEntrenados= 0
     else:    
         IndividuosEntrenadoUno = individuo
 
@@ -216,7 +218,7 @@ if __name__ == '__main__':
 
         print mejorConfiguracion
 
-        mejorModelo.model.save("mejorModeloPaso"+str(numeroPaso)+".h5")
+        #mejorModelo.model.save("mejorModeloPaso"+str(numeroPaso)+".h5")
 
         nombreIteracion = "paso"+str(numeroPaso)
 

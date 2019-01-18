@@ -208,7 +208,11 @@ def fitness(x):
 
 	error, y_test, prediccionEnTest, model, y_test, prediccionEnTest = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
 
-	return error
+	model.save("mejorModeloPaso"+str(numeroPaso)+".h5")
+	configuracion = "numEpocas:", numEpocas, "-learningRate:",learningRate,"-trainingRate:",trainingRate,"-optimizer:",optimizer,"-activation:",activation,"-filterSize: ",filterSize,"-strides: ",strides,"-padding:",padding,"-pool:",pool,"-valorDropout:",valorDropout,"-numeroPaso:",numeroPaso
+ 	print configuracion
+
+	return error * -1
 
 if __name__ == '__main__':
 
