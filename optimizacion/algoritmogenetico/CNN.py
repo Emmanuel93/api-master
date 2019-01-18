@@ -274,7 +274,8 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
 
     # Mejor dropout encontrado en experimiento de dropout, ahora este valor lo pasa el genetico
     #valorDropout = 0.4
-
+    
+    (X_train, y_train), (x_test, y_test) = mnist.load_data();
     X_train = datosImagenesTrain
     X_test = datosImagenesTest
 
@@ -284,7 +285,11 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     # reshape to be [samples][pixels][width][height]
     X_train = X_train.reshape(X_train.shape[0], 1, tamanioImagen, tamanioImagen)
     X_test = X_test.reshape(X_test.shape[0], 1, tamanioImagen, tamanioImagen)
+    
 
+    X_train = X_train.astype('float32')
+    x_test = x_test.astype('float32')
+     
     # normalize inputs from 0-255 to 0-1
     X_train = X_train / 255
     X_test = X_test / 255
@@ -311,6 +316,8 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
 
     pool1 = helper.poolingFactory(pool)
     pool2 = helper.poolingFactory(pool)
+
+    print "hola mundo"
 
     model = fitModel(X_train, y_train, tamanioImagen, epocas, valorDropout, opt, act, conv1, conv2, pool1, pool2)
     prediccionEnTest = model.predict(X_test)

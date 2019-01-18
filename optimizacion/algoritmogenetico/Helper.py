@@ -21,18 +21,19 @@ def leerArchivo(ruta):
     return serie
 
 def normalizarSerie(serie):
-    minimo = min(serie)
-    maximo = max(serie)
-
-    return map(lambda x : (x - minimo) / (maximo - minimo), serie )
+    minimo = float(min(serie))
+    maximo = float(max(serie))
+    dividendo = float(maximo-minimo)
+    print dividendo
+    return map(lambda x : (x - minimo) / dividendo, serie )
 
 def normalizarSerieConMaximoMinimo(serie, maximo, minimo):
 
     return map(lambda x : (x - minimo) / (maximo - minimo), serie )    
 
 def normalizarSerieParaImagen2(serie):
-        minimo = min(serie)
-        maximo = max(serie)
+        minimo = float(min(serie))
+        maximo = float(max(serie))
 
         return map(lambda x : ((x - maximo) +  (x - minimo)) / (maximo - minimo), serie )
 
