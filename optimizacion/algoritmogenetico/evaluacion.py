@@ -208,7 +208,7 @@ def fitness(x):
 
 	error, y_test, prediccionEnTest, model, y_test, prediccionEnTest = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
 
-	return error
+	return error * -1.00
 
 if __name__ == '__main__':
 
