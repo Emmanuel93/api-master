@@ -3,6 +3,7 @@ import pika
 import time
 import json
 import numpy as np
+import time
 import CNN as CNN
 import Helper as helper
 
@@ -14,9 +15,7 @@ class Solution(object):
       vars(self).update( dict )
 
     def calculate_fitness(self, fitness_function):
-		print("Empezo el entrnamiento")
 		self.fitness = fitness_function(self.value)
-		print("Finalizo el entrenamiento")
 
 def compete(a, b):
     """
@@ -40,7 +39,7 @@ def x(ch, method, properties, body):
 	individuo.calculate_fitness(f)
 	ch.basic_ack(delivery_tag=method.delivery_tag)
 	credentials = pika.PlainCredentials('server', 'emmanuel')
-	connection = pika.BlockingConnection(pika.ConnectionParameters( host='192.168.1.162',credentials=credentials ))
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials ))
 	channel = connection.channel()
 	channel.queue_declare(queue='individuosEntrenados', durable=True)
 	individuoEntrenado = json.dumps(individuo.__dict__)
@@ -200,19 +199,18 @@ def fitness(x):
 
 	nombreArchivo = "Agua_3121"
 	rutaArchivo = nombreArchivo+'.csv'
-	serie = helper.leerArchivo(rutaArchivo)
-
-	serie = helper.normalizarSerie(serie)
+	serie = "Agua_3121"
 
 	numeroPaso = 1
+	horaInicio = time.strftime("%H-%M-%S")
+	fechaInicio = time.strftime("%d-%m-%Y")
+	score, model = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
+	print(score)
+	horaFin = time.strftime("%H:%M:%S")
+	fechaFin = time.strftime("%d-%m-%Y")
+	model.save("Modelo"+horaInicio+"_"+horaInicio+"_"+horaFin+"_"+fechaFin+".h5")
 
-	error, y_test, prediccionEnTest, model, y_test, prediccionEnTest = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
-
-
-	model.save("mejorModeloPaso"+str(numeroPaso)+".h5")
-	configuracion = "numEpocas:", numEpocas, "-learningRate:",learningRate,"-trainingRate:",trainingRate,"-optimizer:",optimizer,"-activation:",activation,"-filterSize: ",filterSize,"-strides: ",strides,"-padding:",padding,"-pool:",pool,"-valorDropout:",valorDropout,"-numeroPaso:",numeroPaso
- 	print configuracion
-	return error * -1.00
+	return score[1] * -1
 
 if __name__ == '__main__':
 
@@ -247,7 +245,7 @@ if __name__ == '__main__':
 	print(nombreArchivo)
 
 	credentials = pika.PlainCredentials('server', 'emmanuel')
-	connection = pika.BlockingConnection(pika.ConnectionParameters( host='192.168.1.162',credentials=credentials ))
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials ))
 	channel = connection.channel()
 	channel.basic_qos(prefetch_count=1)
 	channel.basic_consume(x, queue='individuos')

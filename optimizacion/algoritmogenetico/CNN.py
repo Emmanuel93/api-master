@@ -1,6 +1,7 @@
 import cPickle
 import numpy as np
 np.set_printoptions(threshold=np.inf)
+import keras
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense
@@ -54,8 +55,10 @@ def fitModel(datosImagenesEntrenamiento, datosTargetEntrenamiento, tamanioImagen
 
     # Fit the model
     #model.fit(datosImagenesEntrenamiento, datosTargetEntrenamiento, epochs=epocas, verbose=0, callbacks=[csv_logger])
-    model.fit(datosImagenesEntrenamiento, datosTargetEntrenamiento, epochs=epocas, verbose=0)
-
+    print "Empezo el entrenamiento"
+    model.fit(datosImagenesEntrenamiento, datosTargetEntrenamiento, batch_size=10000 ,epochs=epocas, verbose=0)
+    print "Finalizo el entrenamiento"
+    
     return model
 
 def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convolutionalLayer1, convolutionalLayer2, poolingLayer1, poolingLayer2):
@@ -73,7 +76,7 @@ def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convoluti
     #model.add(Dropout(valorDropout))
     model.add(Flatten())
 
-    model.add(Dense(32))
+    model.add(Dense(128))
     #model.add(Dropout(valorDropout))
     model.add(Activation('relu'))
 
@@ -83,7 +86,7 @@ def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convoluti
 
     model.add(Dropout(valorDropout))
 
-    model.add(Dense(1))
+    model.add(Dense(10))
     model.add(Activation('linear'))
 
     # Compile model
@@ -267,40 +270,36 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     #fechaInicio = time.strftime("%d-%m-%Y")
 
     # Mejor tamanio de imagen encontrado en experimiento de tamanios de imagenes
-    tamanioImagen = 24
-    tipoSerieAImagen = 'GRAMIAN_ANGULAR_FIELD'
-
-    datosImagenesTrain, datosImagenesTrainTarget, datosImagenesTest, datosImagenesTestTarget = SerieToImage.obtenerImagenes(serie, tipoSerieAImagen, numeroPaso, tamanioImagen, trainingRate)
-
+    tamanioImagen = 28
     # Mejor dropout encontrado en experimiento de dropout, ahora este valor lo pasa el genetico
     #valorDropout = 0.4
+    # the data, shuffled and split between train and test sets
+    num_classes = 10
+
+    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+
+    if K.image_data_format() == 'channels_first':
+        x_train = x_train.reshape(x_train.shape[0], 1, tamanioImagen, tamanioImagen)
+        x_test = x_test.reshape(x_test.shape[0], 1, tamanioImagen, tamanioImagen)
+        input_shape = (1, tamanioImagen, tamanioImagen)
+    else:
+        x_train = x_train.reshape(x_train.shape[0], tamanioImagen, tamanioImagen, 1)
+        x_test = x_test.reshape(x_test.shape[0], tamanioImagen, tamanioImagen, 1)
+        input_shape = (tamanioImagen, tamanioImagen, 1)
     
-    (X_train, y_train), (x_test, y_test) = mnist.load_data();
-    X_train = datosImagenesTrain
-    X_test = datosImagenesTest
-
-    y_train = datosImagenesTrainTarget
-    y_test = datosImagenesTestTarget
-
-    # reshape to be [samples][pixels][width][height]
-    X_train = X_train.reshape(X_train.shape[0], 1, tamanioImagen, tamanioImagen)
-    X_test = X_test.reshape(X_test.shape[0], 1, tamanioImagen, tamanioImagen)
-    
-
-    X_train = X_train.astype('float32')
+    x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
-     
-    # normalize inputs from 0-255 to 0-1
-    X_train = X_train / 255
-    X_test = X_test / 255
 
-    y_train = y_train.reshape(len(y_train), 1)
-    y_test = y_test.reshape(len(y_test), 1)
+    x_train /= 255
+    x_test /= 255
 
-    mejorMSETest = 9999999999
-    mejorPrediccionTest = None
-    mejorPrediccionTestNombre = ''
-    mejorModelo = None
+    print('x_train shape:', x_train.shape)
+    print(x_train.shape[0], 'train samples')
+    print(x_test.shape[0], 'test samples')
+
+    y_train = keras.utils.to_categorical(y_train, num_classes)
+    y_test = keras.utils.to_categorical(y_test, num_classes)
 
     opt = helper.optimizerFactory(optimizer, learningRate)
     act = helper.activationFactory(activation)
@@ -308,7 +307,7 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     type = '2d'
     filterNumber = 64
     kernelSize = (filterSize, filterSize)
-    inputShape = (1, tamanioImagen, tamanioImagen)
+    inputShape = input_shape
     padd = padding
 
     conv1 = helper.convolutionLayerFactory(type, filterNumber, kernelSize, inputShape, padd)
@@ -317,9 +316,7 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     pool1 = helper.poolingFactory(pool)
     pool2 = helper.poolingFactory(pool)
 
-    print "hola mundo"
-
-    model = fitModel(X_train, y_train, tamanioImagen, epocas, valorDropout, opt, act, conv1, conv2, pool1, pool2)
+    model = fitModel(x_train, y_train, tamanioImagen, epocas, valorDropout, opt, act, conv1, conv2, pool1, pool2)
     prediccionEnTest = model.predict(X_test)
 
     #prediccionEnTrain = model.predict(X_train)

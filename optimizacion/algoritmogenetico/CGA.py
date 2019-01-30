@@ -89,7 +89,7 @@ def recieve_individuos(individuo):
     if contadorIndivudosEntrenados == 2:
         IndividuosEntrenadoDos = individuo
         stop = False
-        contadorIndivudosEntrenados= 0
+        contadorIndivudosEntrenados = 0
     else:    
         IndividuosEntrenadoUno = individuo
 
