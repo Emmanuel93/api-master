@@ -319,13 +319,15 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     model = fitModel(x_train, y_train, tamanioImagen, epocas, valorDropout, opt, act, conv1, conv2, pool1, pool2)
     prediccionEnTest = model.predict(X_test)
 
+
+    score = model.evaluate(x_test, y_test, verbose=0)
     #prediccionEnTrain = model.predict(X_train)
 
     mseTest = helper.MSE(y_test, prediccionEnTest)
 
     #mseTrain = helper.MSE(y_train, prediccionEnTrain)
 
-    return mseTest, y_test, prediccionEnTest, model, y_test, prediccionEnTest
+    return score, mseTest, model
 
     '''
     if mseTest < mejorMSETest:

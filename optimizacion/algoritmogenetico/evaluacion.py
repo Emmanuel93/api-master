@@ -204,13 +204,14 @@ def fitness(x):
 	numeroPaso = 1
 	horaInicio = time.strftime("%H-%M-%S")
 	fechaInicio = time.strftime("%d-%m-%Y")
-	score, model = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
+	score, mseTest, model = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
 	print(score)
+	print(mseTest)
 	horaFin = time.strftime("%H:%M:%S")
 	fechaFin = time.strftime("%d-%m-%Y")
 	model.save("Modelo"+horaInicio+"_"+horaInicio+"_"+horaFin+"_"+fechaFin+".h5")
 
-	return score[1] * -1
+	return score[0] * -1
 
 if __name__ == '__main__':
 
