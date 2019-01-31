@@ -56,7 +56,7 @@ def fitModel(datosImagenesEntrenamiento, datosTargetEntrenamiento, tamanioImagen
     # Fit the model
     #model.fit(datosImagenesEntrenamiento, datosTargetEntrenamiento, epochs=epocas, verbose=0, callbacks=[csv_logger])
     print "Empezo el entrenamiento"
-    model.fit(datosImagenesEntrenamiento, datosTargetEntrenamiento, batch_size=10000 ,epochs=epocas, verbose=0)
+    model.fit(datosImagenesEntrenamiento, datosTargetEntrenamiento, batch_size=1000 ,epochs=epocas, verbose=0)
     print "Finalizo el entrenamiento"
     
     return model
@@ -90,7 +90,9 @@ def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convoluti
     model.add(Activation('linear'))
 
     # Compile model
-    model.compile(loss='mean_squared_error', optimizer=optimizer)
+    model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=keras.optimizers.Adadelta(),
+              metrics=['accuracy','mse','mape'])
 
     return model
 
@@ -317,17 +319,10 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     pool2 = helper.poolingFactory(pool)
 
     model = fitModel(x_train, y_train, tamanioImagen, epocas, valorDropout, opt, act, conv1, conv2, pool1, pool2)
-    prediccionEnTest = model.predict(x_test)
-
 
     score = model.evaluate(x_test, y_test, verbose=0)
-    #prediccionEnTrain = model.predict(X_train)
 
-    mseTest = helper.MSE(y_test, prediccionEnTest)
-
-    #mseTrain = helper.MSE(y_train, prediccionEnTrain)
-
-    return score, mseTest, model
+    return score, model
 
     '''
     if mseTest < mejorMSETest:

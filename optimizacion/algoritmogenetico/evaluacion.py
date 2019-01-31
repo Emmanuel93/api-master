@@ -16,6 +16,7 @@ class Solution(object):
 
     def calculate_fitness(self, fitness_function):
 		self.fitness = fitness_function(self.value)
+		print("Calculando fitness")
 
 def compete(a, b):
     """
@@ -204,14 +205,13 @@ def fitness(x):
 	numeroPaso = 1
 	horaInicio = time.strftime("%H-%M-%S")
 	fechaInicio = time.strftime("%d-%m-%Y")
-	score, mseTest, model = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
+	score, model = CNN.experimento(serie, numEpocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso)
 	print(score)
-	print(mseTest)
 	horaFin = time.strftime("%H:%M:%S")
 	fechaFin = time.strftime("%d-%m-%Y")
 	model.save("Modelo"+horaInicio+"_"+horaInicio+"_"+horaFin+"_"+fechaFin+".h5")
 
-	return score[0] * -1
+	return score[0]
 
 if __name__ == '__main__':
 
@@ -246,7 +246,7 @@ if __name__ == '__main__':
 	print(nombreArchivo)
 
 	credentials = pika.PlainCredentials('server', 'emmanuel')
-	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials ))
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials, heartbeat_interval=65535, blocked_connection_timeout=65535))
 	channel = connection.channel()
 	channel.basic_qos(prefetch_count=1)
 	channel.basic_consume(x, queue='individuos')
