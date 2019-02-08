@@ -16,7 +16,6 @@ class Solution(object):
 
     def calculate_fitness(self, fitness_function):
 		self.fitness = fitness_function(self.value)
-		print("Calculando fitness")
 
 def compete(a, b):
     """
@@ -40,7 +39,7 @@ def x(ch, method, properties, body):
 	individuo.calculate_fitness(f)
 	ch.basic_ack(delivery_tag=method.delivery_tag)
 	credentials = pika.PlainCredentials('server', 'emmanuel')
-	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials ))
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host='192.168.1.162',credentials=credentials ))
 	channel = connection.channel()
 	channel.queue_declare(queue='individuosEntrenados', durable=True)
 	individuoEntrenado = json.dumps(individuo.__dict__)
@@ -211,7 +210,7 @@ def fitness(x):
 	fechaFin = time.strftime("%d-%m-%Y")
 	model.save("Modelo"+horaInicio+"_"+horaInicio+"_"+horaFin+"_"+fechaFin+".h5")
 
-	return score[0]
+	return score[1]
 
 if __name__ == '__main__':
 
@@ -246,7 +245,7 @@ if __name__ == '__main__':
 	print(nombreArchivo)
 
 	credentials = pika.PlainCredentials('server', 'emmanuel')
-	connection = pika.BlockingConnection(pika.ConnectionParameters( host='localhost',credentials=credentials, heartbeat_interval=65535, blocked_connection_timeout=65535))
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host='192.168.1.162', credentials=credentials, heartbeat_interval=6000, blocked_connection_timeout=65535))
 	channel = connection.channel()
 	channel.basic_qos(prefetch_count=1)
 	channel.basic_consume(x, queue='individuos')
