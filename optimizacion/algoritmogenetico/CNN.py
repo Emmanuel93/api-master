@@ -87,12 +87,12 @@ def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convoluti
     model.add(Dropout(valorDropout))
 
     model.add(Dense(10))
-    model.add(Activation('linear'))
+    model.add(Activation('softmax'))
 
     # Compile model
     model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
-              metrics=['accuracy','mse','mape'])
+              metrics=['accuracy'])
 
     return model
 
