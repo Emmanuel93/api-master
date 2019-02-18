@@ -209,7 +209,7 @@ def fitness(x):
 	print(score)
 	horaFin = time.strftime("%H:%M:%S")
 	fechaFin = time.strftime("%d-%m-%Y")
-	model.save("Modelo"+fechaInicio+"_"+horaInicio+"_"+fechaFin+"_"+horaFin+"_"+score[1]+"_.h5")
+	model.save("Modelo"+fechaInicio+"_"+horaInicio+"_"+fechaFin+"_"+horaFin+".h5")
 
 	return score[1]
 
