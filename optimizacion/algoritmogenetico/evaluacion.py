@@ -15,8 +15,8 @@ class Solution(object):
       vars(self).update( dict )
 
     def calculate_fitness(self, fitness_function):
-		self.fitness = fitness_function(self.value)
-		print("Calculando fitness")
+        self.fitness = fitness_function(self.value)
+        print("Calculando fitness")
 
 def compete(a, b):
     """

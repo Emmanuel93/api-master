@@ -52,7 +52,6 @@ def fitModel(datosImagenesEntrenamiento, datosTargetEntrenamiento, tamanioImagen
     model = baseline_model(tamanioImagen, valorDropout, optimizer, activation, convolutionalLayer1, convolutionalLayer2, poolingLayer1, poolingLayer2)
 
     #csv_logger = callbacks.CSVLogger('training.log', separator=',', append=True)
-
     # Fit the model
     #model.fit(datosImagenesEntrenamiento, datosTargetEntrenamiento, epochs=epocas, verbose=0, callbacks=[csv_logger])
     print "Empezo el entrenamiento"
