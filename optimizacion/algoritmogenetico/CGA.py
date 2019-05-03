@@ -164,7 +164,7 @@ def callback2(body):
 
 if __name__ == '__main__':
 
-    horaInicio = time.strftime("%H-%M-%S")
+    horaInicio = time.strftime("%H:%M:%S")
     fechaInicio = time.strftime("%d-%m-%Y")
 
     global numeroPaso
@@ -220,12 +220,12 @@ if __name__ == '__main__':
 
         #mejorModelo.model.save("mejorModeloPaso"+str(numeroPaso)+".h5")
 
-        nombreIteracion = "paso"+str(numeroPaso)
+        #nombreIteracion = "paso"+str(numeroPaso)
 
-        helper.guardarMSEContinuoExcel("Experimento_resultadosMSE"+fechaInicio+"_"+horaInicio+".csv", nombreIteracion, mejorError, 'MSE_TEST', mejorConfiguracion, 'MEJOR_CONFIGURACION')
+        #helper.guardarMSEContinuoExcel("Experimento_resultadosMSE"+fechaInicio+"_"+horaInicio+".csv", nombreIteracion, mejorError, 'MSE_TEST', mejorConfiguracion, 'MEJOR_CONFIGURACION')
 
     # Hora y fecha inicio
     horaFin = time.strftime("%H:%M:%S")
     fechaFin = time.strftime("%d/%m/%Y")
 
-    print "Inicio: ", fechaInicio," ", horaInicio, " terminio: ",fechaFin, " ", horaFin
+    print "Inicio: ", fechaInicio," ", horaInicio, " termino: ",fechaFin, " ", horaFin
