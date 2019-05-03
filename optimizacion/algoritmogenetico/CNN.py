@@ -21,6 +21,8 @@ import Helper as helper
 import time
 import matplotlib.pyplot as plt
 import os
+#============ Multi-GPU ==========
+from multi_gpu import to_multi_gpu
 
 
 # fix random seed for reproducibility
@@ -88,7 +90,9 @@ def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convoluti
 
     model.add(Dense(10))
     model.add(Activation('softmax'))
-
+    #============ Multi-GPU ============
+    model = to_multi_gpu(model,n_gpus=2)
+    #===================================
     # Compile model
     model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
