@@ -15,7 +15,10 @@ class Solution(object):
       vars(self).update( dict )
 
     def calculate_fitness(self, fitness_function):
-		self.fitness = fitness_function(self.value)
+		scores = fitness_function(self.value)
+		print(scores)
+		self.fitness = scores[1]
+		self.loss = scores[0]
 		print("Calculando fitness")
 
 def compete(a, b):
@@ -62,7 +65,7 @@ def fitness(x):
 
 	contadorSolucion = contadorSolucion + 1
 
-	castigo = -9999999
+	castigo = [1.000000, -999999]
 
     # 0 no es valido
     #epocas 20, 30, 40, 50, 60, 70, 80, 90 ... 140
@@ -211,7 +214,7 @@ def fitness(x):
 	fechaFin = time.strftime("%d-%m-%Y")
 	model.save("Modelo"+fechaInicio+"_"+horaInicio+"_"+fechaFin+"_"+horaFin+".h5")
 
-	return score[1]
+	return score
 
 if __name__ == '__main__':
 
