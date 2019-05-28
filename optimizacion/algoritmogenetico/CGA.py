@@ -150,7 +150,7 @@ def run(generations, size, population_size, fitness_function):
         else:
             best = winner
 
-        print "generation: %d best value: %s best fitness: %f" % (i + 1, best.value, float(best.fitness))
+        print "generation: %d best value: %s best fitness: %f best loss: %g" % (i + 1, best.value, float(best.fitness), float(best.loss))
 
         # updates the probability vector based on the success of each bit
         update_vector(vector, winner.value, loser.value, population_size)
