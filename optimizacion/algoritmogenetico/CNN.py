@@ -66,19 +66,26 @@ def fitModel(datosImagenesEntrenamiento, datosTargetEntrenamiento, tamanioImagen
 def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convolutionalLayer1, convolutionalLayer2, poolingLayer1, poolingLayer2):
     # create model
     model = Sequential()
+    
+    model.add(convolutionalLayer1)
+    model.add(activation)
     model.add(convolutionalLayer1)
     model.add(activation)
     model.add(poolingLayer1)
+    model.add(Dropout(valorDropout))
 
+    
+    model.add(convolutionalLayer2)
+    model.add(activation)
     model.add(convolutionalLayer2)
     model.add(activation)
     model.add(poolingLayer2)
-
+    model.add(Dropout(valorDropout))
     # Dropout va de 0 - 1
     #model.add(Dropout(valorDropout))
     model.add(Flatten())
 
-    model.add(Dense(128))
+    model.add(Dense(512))
     #model.add(Dropout(valorDropout))
     model.add(Activation('relu'))
 
@@ -90,12 +97,14 @@ def baseline_model(tamanioImagen, valorDropout, optimizer, activation, convoluti
 
     model.add(Dense(10))
     model.add(Activation('softmax'))
+
+    opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
     #============ Multi-GPU ============
     model = to_multi_gpu(model,n_gpus=2)
     #===================================
     # Compile model
     model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adadelta(),
+              optimizer=opt,
               metrics=['accuracy'])
 
     return model
@@ -271,28 +280,12 @@ def simulacion():
 
 def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation, filterSize, strides, padding, pool, valorDropout, numeroPaso):
 
-    # Hora y fecha inicio
-    #horaInicio = time.strftime("%H-%M-%S")
-    #fechaInicio = time.strftime("%d-%m-%Y")
-
-    # Mejor tamanio de imagen encontrado en experimiento de tamanios de imagenes
-    tamanioImagen = 28
-    # Mejor dropout encontrado en experimiento de dropout, ahora este valor lo pasa el genetico
-    #valorDropout = 0.4
-    # the data, shuffled and split between train and test sets
     num_classes = 10
-
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()
-	
-    K.clear_session()
-    if K.image_data_format() == 'channels_first':
-        x_train = x_train.reshape(x_train.shape[0], 1, tamanioImagen, tamanioImagen)
-        x_test = x_test.reshape(x_test.shape[0], 1, tamanioImagen, tamanioImagen)
-        input_shape = (1, tamanioImagen, tamanioImagen)
-    else:
-        x_train = x_train.reshape(x_train.shape[0], tamanioImagen, tamanioImagen, 1)
-        x_test = x_test.reshape(x_test.shape[0], tamanioImagen, tamanioImagen, 1)
-        input_shape = (tamanioImagen, tamanioImagen, 1)
+    # The data, split between train and test sets:
+    (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+    print('x_train shape:', x_train.shape)
+    print(x_train.shape[0], 'train samples')
+    print(x_test.shape[0], 'test samples')
     
     x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
@@ -327,6 +320,7 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     score = model.evaluate(x_test, y_test, verbose=0)
 
     return score, model
+
 
     '''
     if mseTest < mejorMSETest:
