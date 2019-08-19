@@ -21,6 +21,7 @@ import Helper as helper
 import time
 import matplotlib.pyplot as plt
 import os
+from keras.datasets import fashion_mnist
 #============ Multi-GPU ==========
 from multi_gpu import to_multi_gpu
 
@@ -281,8 +282,8 @@ def experimento(serie, epocas, learningRate, trainingRate, optimizer, activation
     #valorDropout = 0.4
     # the data, shuffled and split between train and test sets
     num_classes = 10
-
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+    
+    (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 	
     K.clear_session()
     if K.image_data_format() == 'channels_first':

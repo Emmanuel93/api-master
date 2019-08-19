@@ -118,9 +118,8 @@ def activationFactory(activation):
         raise
 
 def convolutionLayerFactory(type, filterNumber, kernelSize, inputShape, padding):
-
     if type == '2d':
-        return Conv2D(filterNumber, kernelSize, input_shape=inputShape, padding=padding)
+        return Conv2D(filterNumber, kernelSize, input_shape=(1,28,28), padding=padding,data_format='channels_first')
     else:
         logging.warning('Tipo Capa Convolucion incorrecto !!')
 
