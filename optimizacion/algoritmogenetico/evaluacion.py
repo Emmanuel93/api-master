@@ -44,7 +44,7 @@ def x(ch, method, properties, body):
 	ch.basic_ack(delivery_tag=method.delivery_tag)
 	credentials = pika.PlainCredentials('guest', 'guest')
         
-    print("Connecting to host ", broker_host, "on default port")
+	print("Connecting to host ", broker_host, "on default port")
 	connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_host,credentials=credentials))
 	channel = connection.channel()
 	channel.queue_declare(queue='individuosEntrenados', durable=True)
