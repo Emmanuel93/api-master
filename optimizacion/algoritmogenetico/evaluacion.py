@@ -5,6 +5,7 @@ import json
 import numpy as np
 import time
 import CNN as CNN
+import os
 import Helper as helper
 
 class Solution(object):
