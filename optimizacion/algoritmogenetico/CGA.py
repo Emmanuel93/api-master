@@ -6,11 +6,12 @@
 __author__ = 'igor'
 
 from random import random
-import Helper as helper
+# import Helper as helper
 import time
 import numpy as np
 import pika
 import json
+import os
 from ThreadRabbitMq import ThreadRabbitMq
 
 
@@ -115,7 +116,8 @@ def run(generations, size, population_size, fitness_function):
         individuo 0111000101100001110
         individuo 0001011010110001000
         '''
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        print("Connecting to host ", broker_host, "on default port")
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_host))
         channel = connection.channel()
 
         channel.queue_declare(queue='individuos',  durable=True)
@@ -135,7 +137,7 @@ def run(generations, size, population_size, fitness_function):
         connection.close()
 
         while(stop):
-            a = 1
+            time.sleep(1)
         # calculate fitness for each
         # s1.calculate_fitness(fitness_function)
         # s2.calculate_fitness(fitness_function)
@@ -163,6 +165,11 @@ def callback2(body):
 
 
 if __name__ == '__main__':
+
+    if 'BROKER_HOST' not in os.environ:
+            raise AssertionError('BROKER HOST environment variable not set')
+
+    broker_host = os.environ['BROKER_HOST']
 
     horaInicio = time.strftime("%H:%M:%S")
     fechaInicio = time.strftime("%d-%m-%Y")

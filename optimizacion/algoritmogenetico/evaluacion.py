@@ -42,8 +42,10 @@ def x(ch, method, properties, body):
 	individuo = json.loads( body, object_hook= Solution )
 	individuo.calculate_fitness(f)
 	ch.basic_ack(delivery_tag=method.delivery_tag)
-	credentials = pika.PlainCredentials('server', 'emmanuel')
-	connection = pika.BlockingConnection(pika.ConnectionParameters( host='192.168.1.221',credentials=credentials ))
+	credentials = pika.PlainCredentials('guest', 'guest')
+        
+    print("Connecting to host ", broker_host, "on default port")
+	connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_host,credentials=credentials))
 	channel = connection.channel()
 	channel.queue_declare(queue='individuosEntrenados', durable=True)
 	individuoEntrenado = json.dumps(individuo.__dict__)
@@ -218,6 +220,11 @@ def fitness(x):
 
 if __name__ == '__main__':
 
+	if 'BROKER_HOST' not in os.environ:
+            raise AssertionError('BROKER HOST environment variable not set')
+
+    broker_host = os.environ['BROKER_HOST']
+
 	global cont
 	global individuo1
 	global individuo2
@@ -248,8 +255,8 @@ if __name__ == '__main__':
 
 	print(nombreArchivo)
 
-	credentials = pika.PlainCredentials('server', 'emmanuel')
-	connection = pika.BlockingConnection(pika.ConnectionParameters( host='192.168.1.221',credentials=credentials, heartbeat_interval=65535, blocked_connection_timeout=65535))
+	credentials = pika.PlainCredentials('guest', 'guest')
+	connection = pika.BlockingConnection(pika.ConnectionParameters( host=broker_host,credentials=credentials, heartbeat_interval=65535, blocked_connection_timeout=65535))
 	channel = connection.channel()
 	channel.basic_qos(prefetch_count=1)
 	channel.basic_consume(x, queue='individuos')
