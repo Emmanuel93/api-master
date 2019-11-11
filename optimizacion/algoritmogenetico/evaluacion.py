@@ -221,7 +221,7 @@ def fitness(x):
 if __name__ == '__main__':
 
 	if 'BROKER_HOST' not in os.environ:
-        raise AssertionError('BROKER HOST environment variable not set')
+		raise AssertionError('BROKER HOST environment variable not set')
 
 	broker_host = os.environ['BROKER_HOST']
 

@@ -209,7 +209,7 @@ if __name__ == '__main__':
     '''
 
     print 'Lanzando escuchador de cuando los individuos ya han finalizado'
-    td = ThreadRabbitMq('localhost', 'guest', 'guest', 'individuosEntrenados',recieve_individuos, durable=True)
+    td = ThreadRabbitMq(broker_host, 'guest', 'guest', 'individuosEntrenados',recieve_individuos, durable=True)
     td.start()
 
     for numeroPaso in range(1, 2):
